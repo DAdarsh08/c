@@ -1,0 +1,152 @@
+#include<stdio.h>
+#include<string.h>
+#include<stdlib.h>
+
+#define MAX 100
+char infix[MAX];
+char postfix[MAX];
+
+char stack[MAX];
+int top=-1;
+
+int isempty()
+{
+    if(top==-1)
+    {
+        return 1;
+    }
+    else{
+        return 0;
+    }
+}
+void push(char ch)
+{
+    if(top==MAX-1)
+    {
+        printf("Overflow\n");
+        return;
+    }
+    else{
+        top++;
+        stack[top]=ch;
+    }
+
+}
+char pop( )
+{
+    char ch;
+    if(top==-1)
+    {
+        printf("underflow\n");
+        exit(1);
+    }
+    ch = stack[top];
+    top--;
+    return ch;
+
+}
+int precedence( char symbol)
+{
+    switch (symbol)
+    {
+    case '^':
+      {
+        return 3;
+      }
+      
+      case '*':
+      case '/':
+      {
+        return 2;
+      }
+      case '+':
+      case '-':
+      {
+        return 1;
+      }
+      default:
+      {
+        return 0;
+      }
+      
+
+        
+        break;
+    
+     
+    }
+}
+
+void intopost()
+{
+    int i=0 ;
+    int j=0;
+    char symbol;
+    char next;
+    for(int i=0;i<strlen(infix);i++)
+    {
+        symbol=infix[i];
+        switch(symbol)
+        {
+            case '(':
+            push('(');
+            break;
+            case ')':
+            {
+                while((next=pop())!='(')
+                {
+                    postfix[j++]=next;
+                }
+                break;
+            }
+            case '+':
+            case '-':
+            case '*':
+            case '/':
+            case '^':
+            {
+                while(!isempty()&&precedence(stack[top])>=precedence(symbol))
+                { 
+                    postfix[j++]=pop();
+
+
+                }
+                push(symbol);
+            }
+            break;
+            default:
+            postfix[j++]=symbol;
+            break;
+
+        }
+       
+
+    }
+     while(!isempty())
+        {
+            postfix[j++]=pop();
+        }
+        postfix[j]='\0';
+}
+
+
+
+
+
+void printpostfix()
+{
+    for (int i=0;i<strlen(postfix);i++)
+    {
+        printf("%c ,",postfix[i]);
+        
+    }
+
+}
+int main()
+{
+    printf("enter the infix expression \n");
+    gets(infix);
+    intopost();
+    printpostfix();
+
+}
